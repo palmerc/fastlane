@@ -59,6 +59,7 @@ module Gym
       def setting
         setting = []
         setting << "CODE_SIGN_IDENTITY=#{Gym.config[:codesigning_identity].shellescape}" if Gym.config[:codesigning_identity]
+        setting << "build-for-testing" if Gym.config[:build_for_testing]
         setting
       end
 

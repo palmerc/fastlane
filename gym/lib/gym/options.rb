@@ -139,6 +139,12 @@ module Gym
                                      is_string: false,
                                      type: Boolean,
                                      optional: true),
+        FastlaneCore::ConfigItem.new(key: :build_for_testing,
+                                     env_name: "GYM_BUILD_FOR_TESTING",
+                                     description: "Build for running XCUITests",
+                                     is_string: false,
+                                     type: Boolean,
+                                     optional: true),
         # Very optional
         FastlaneCore::ConfigItem.new(key: :build_path,
                                      env_name: "GYM_BUILD_PATH",
