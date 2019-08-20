@@ -111,6 +111,7 @@ describe Gym do
                              ])
       end
 
+
       it "#project_path_array", requires_xcodebuild: true do
         result = Gym::BuildCommandGenerator.project_path_array
         expect(result).to eq(["-scheme Example", "-project ./gym/examples/standard/Example.xcodeproj"])
@@ -169,6 +170,29 @@ describe Gym do
                                :archive,
                                "| tee #{log_path.shellescape}",
                                "| xcpretty"
+                             ])
+      end
+    end
+
+    describe "Build-for-testing Example" do
+      it "build-for-testing with the example project", requires_xcodebuild: true do
+        log_path = File.expand_path("#{FastlaneCore::Helper.buildlog_path}/gym/ExampleProductName-Example.log")
+
+        options = { project: "./gym/examples/standard/Example.xcodeproj", build_for_testing: true, scheme: 'Example' }
+        Gym.config = FastlaneCore::Configuration.create(Gym::Options.available_options, options)
+
+        result = Gym::BuildCommandGenerator.generate
+        expect(result).to eq([
+                                 "set -o pipefail &&",
+                                 "xcodebuild",
+                                 "-scheme Example",
+                                 "-project ./gym/examples/standard/Example.xcodeproj",
+                                 "-destination 'generic/platform=iOS'",
+                                 "-archivePath #{Gym::BuildCommandGenerator.archive_path.shellescape}",
+                                 :archive,
+                                 :build_for_testing,
+                                 "| tee #{log_path.shellescape}",
+                                 "| xcpretty"
                              ])
       end
     end

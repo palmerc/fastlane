@@ -15,6 +15,7 @@ module Fastlane
         analyze: "analyze",
         archive: "archive",
         build: "build",
+        build_for_testing: "build-for-testing",
         clean: "clean",
         install: "install",
         installsrc: "installsrc",
@@ -448,7 +449,12 @@ module Fastlane
     class XcbuildAction < Action
       def self.run(params)
         params_hash = params || {}
-        params_hash[:build] = true
+        build_for_testing = params.has_key?(:build_for_testing) ? params[:build_for_testing] : false
+        if build_for_testing
+          params_hash[:build_for_testing] = true
+        else
+          params_hash[:build] = true
+        end
         XcodebuildAction.run(params_hash)
       end
 

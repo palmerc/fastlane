@@ -14,6 +14,7 @@ describe Fastlane do
             analyze: true,
             archive: true,
             build: true,
+            build_for_testing: true,
             clean: true,
             install: true,
             installsrc: true,
@@ -58,7 +59,7 @@ describe Fastlane do
         end").runner.execute(:test)
 
         expect(result).to eq(
-          "set -o pipefail && xcodebuild analyze archive build clean install installsrc test -arch \"architecture\" " \
+          "set -o pipefail && xcodebuild analyze archive build build-for-testing clean install installsrc test -arch \"architecture\" " \
           "-alltargets -archivePath \"./build/MyApp.xcarchive\" -configuration \"Debug\" -derivedDataPath \"/derived/data/path\" " \
           "-destination \"name=iPhone 5s,OS=8.1\" -destination-timeout \"240\" -dry-run -exportArchive -exportFormat \"ipa\" " \
           "-exportInstallerIdentity -exportOptionsPlist \"/path/to/plist\" -exportPath \"./build/MyApp\" -exportProvisioningProfile " \
@@ -269,6 +270,23 @@ describe Fastlane do
           + "-scheme \"MyApp\" " \
           + "-workspace \"MyApp.xcworkspace\" " \
           + "-archivePath \"./build-dir/MyApp.xcarchive\" " \
+          + "| tee '#{build_log_path}' | xcpretty --color --simple"
+        )
+      end
+
+      it "can build_for_testing" do
+        result = Fastlane::FastFile.new.parse("lane :test do
+          xcodebuild(
+            build_for_testing: true
+          )
+        end").runner.execute(:test)
+
+        expect(result).to eq(
+          "set -o pipefail && " \
+          + "xcodebuild " \
+          + "build-for-testing " \
+          + "-scheme \"MyApp\" " \
+          + "-workspace \"MyApp.xcworkspace\" " \
           + "| tee '#{build_log_path}' | xcpretty --color --simple"
         )
       end
