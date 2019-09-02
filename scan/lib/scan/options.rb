@@ -310,6 +310,11 @@ module Scan
                                      verify_block: proc do |value|
                                        UI.user_error!("File not found at path '#{File.expand_path(value)}'") unless File.exist?(value)
                                      end),
+        FastlaneCore::ConfigItem.new(key: :skip_codesigning,
+                                     env_name: "SCAN_SKIP_CODESIGNING",
+                                     description: "Build without codesigning",
+                                     type: Boolean,
+                                     optional: true),
 
         # slack
         FastlaneCore::ConfigItem.new(key: :slack_url,

@@ -43,6 +43,7 @@ module Scan
       options << "-enableAddressSanitizer #{config[:address_sanitizer] ? 'YES' : 'NO'}" unless config[:address_sanitizer].nil?
       options << "-enableThreadSanitizer #{config[:thread_sanitizer] ? 'YES' : 'NO'}" unless config[:thread_sanitizer].nil?
       options << "-xctestrun '#{config[:xctestrun]}'" if config[:xctestrun]
+      options << "CODE_SIGN_IDENTITY='' CODE_SIGNING_REQUIRED=NO CODE_SIGN_ENTITLEMENTS='' CODE_SIGNING_ALLOWED=NO" if config[:skip_codesigning]
       options << config[:xcargs] if config[:xcargs]
 
       # detect_values will ensure that these values are present as Arrays if
@@ -73,6 +74,7 @@ module Scan
 
     def suffix
       suffix = []
+
       suffix
     end
 

@@ -180,6 +180,30 @@ describe Scan do
                                      ])
       end
 
+      describe "Standard Example (skip codesigning)" do
+        before do
+          options = { project: "./scan/examples/standard/app.xcodeproj", skip_codesigning: true }
+          Scan.config = FastlaneCore::Configuration.create(Scan::Options.available_options, options)
+        end
+
+        it "uses the correct build command with the example project with no additional parameters", requires_xcodebuild: true do
+          log_path = File.expand_path("~/Library/Logs/scan/app-app.log")
+
+          result = @test_command_generator.generate
+          expect(result).to start_with([
+                                           "set -o pipefail &&",
+                                           "env NSUnbufferedIO=YES xcodebuild",
+                                           "-scheme app",
+                                           "-project ./scan/examples/standard/app.xcodeproj",
+                                           "-destination 'platform=iOS Simulator,id=E697990C-3A83-4C01-83D1-C367011B31EE'",
+                                           "-derivedDataPath '#{Scan.config[:derived_data_path]}'",
+                                           "CODE_SIGN_IDENTITY='' CODE_SIGNING_REQUIRED=NO CODE_SIGN_ENTITLEMENTS='' CODE_SIGNING_ALLOWED=NO",
+                                           :build,
+                                           :test
+                                       ])
+        end
+      end
+
       it "#project_path_array", requires_xcodebuild: true do
         result = @test_command_generator.project_path_array
         expect(result).to eq(["-scheme app", "-project ./scan/examples/standard/app.xcodeproj"])
